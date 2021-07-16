@@ -7,7 +7,7 @@ wsc 0.1.0
 whitespace converter
 
 USAGE:
-    whitespace_converter [OPTIONS] <input>
+    wsc [OPTIONS] <input>
 
 FLAGS:
     -h, --help       Prints help information
@@ -20,4 +20,3 @@ OPTIONS:
 ARGS:
     <input>
 ```
-
