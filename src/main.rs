@@ -20,7 +20,6 @@ fn main(args: Args) -> Result<()> {
     let mut buffer = String::new();
 
     let mut reader = BufReader::new(input);
-    let mut writer = BufWriter::new(&temp);
 
     while let Ok(line) = reader.read_line(&mut buffer) {
         if line == 0 {
