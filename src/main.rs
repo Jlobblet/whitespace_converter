@@ -16,7 +16,6 @@ fn main(args: Args) -> Result<()> {
     let input = File::open(&args.input)?;
     let newline = args.target_newline;
     let indentation = args.indentation_style;
-    let temp = NamedTempFile::new()?;
     let mut buffer = String::new();
 
     let mut reader = BufReader::new(input);
@@ -38,6 +37,5 @@ fn main(args: Args) -> Result<()> {
         std::io::stdout().write_all(buffer.as_bytes())?;
         buffer.clear();
     }
-    std::fs::copy(temp.path(), "output.txt");
     Ok(())
 }
