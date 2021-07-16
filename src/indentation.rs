@@ -25,7 +25,7 @@ impl FromStr for Indentation {
 
 impl Indentation {
     pub(crate) fn make_transformation(&self, buf: String) -> String {
-        let mut new = String::new();
+
         if let Some(index) = match self {
             Indentation::Tabs(_) => buf.find(|c| c != ' '),
             Indentation::Spaces(_) => buf.find(|c| c != '\t')
@@ -33,6 +33,7 @@ impl Indentation {
             if index == 0 {
                 return buf;
             }
+            let mut new = String::with_capacity(buf.capacity());
             let (char, width) = match self {
                 Indentation::Tabs(u) => {
                     ('\t', index / u)
@@ -43,7 +44,9 @@ impl Indentation {
             };
             new.push_str(format!("{:width$}", char, width = width).as_str());
             new.push_str(&buf[index..]);
+            return new;
+        } else{
+            return buf;
         }
-        new
     }
 }
