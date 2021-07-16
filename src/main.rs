@@ -1,9 +1,8 @@
 use std::fs::File;
-use std::io::{BufRead, BufReader, BufWriter, Write};
+use std::io::{BufRead, BufReader, Write};
 
 use anyhow::Result;
 use paw;
-use tempfile::NamedTempFile;
 
 mod args;
 mod indentation;
