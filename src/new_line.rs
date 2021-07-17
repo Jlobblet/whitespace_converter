@@ -21,15 +21,16 @@ impl FromStr for NewLine {
 }
 
 impl NewLine {
-    /// Convert newlines according to what self is:
+    /// Convert newlines according to what `self` is:
     ///
     /// `NewLine::LF` -> convert CRLF (`\r\n`) to LF (`\n`)
     ///
     /// `NewLine::CRLF` -> convert LF to CRLF
     pub(crate) fn make_transformation(&self, buf: String) -> String {
         match self {
-            NewLine::LF => buf.replace("\r\n", "\n"),
-            NewLine::CRLF => buf.replace("\n", "\r\n"),
+            NewLine::LF if buf.ends_with("\r\n") => buf.replace("\r\n", "\n"),
+            NewLine::CRLF if !buf.ends_with("\r\n") => buf.replace("\n", "\r\n"),
+            _ => buf,
         }
     }
 }
