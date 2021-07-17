@@ -25,7 +25,7 @@ pub(crate) struct Args {
     /// e.g wsc README.md -n LF
     ///
     /// wsc README.md -n CRLF
-    #[structopt(short="n", long="newline")]
+    #[structopt(short = "n", long = "newline")]
     pub(crate) target_newline: Option<NewLine>,
 
     /// Whether to convert indentation to tabs or spaces.
@@ -35,6 +35,6 @@ pub(crate) struct Args {
     /// e.g. wsc README.md -i tabs=4
     ///
     /// wsc README.md -i spaces=4
-    #[structopt(short="i", long="indentation")]
+    #[structopt(short = "i", long = "indentation")]
     pub(crate) indentation_style: Option<Indentation>,
 }
