@@ -36,7 +36,8 @@ impl Indentation {
                 Indentation::Tabs(u) => ('\t', index / u),
                 Indentation::Spaces(u) => (' ', index * u),
             };
-            let mut new = std::iter::repeat(char).take(width).collect::<String>();
+            let mut new = String::with_capacity(buf.capacity());
+            new.extend(std::iter::repeat(char).take(width));
             new.reserve_exact(buf.capacity());
             new.push_str(&buf[index..]);
             new
