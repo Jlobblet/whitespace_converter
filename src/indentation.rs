@@ -2,7 +2,7 @@ use std::str::FromStr;
 
 use anyhow::{anyhow, Result};
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub(crate) enum Indentation {
     Tabs(usize),
     Spaces(usize),
@@ -46,6 +46,42 @@ impl Indentation {
             new
         } else {
             buf
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::indentation::Indentation;
+    use std::str::FromStr;
+
+    #[test]
+    fn test_indentation_from_str() {
+        let cases = vec![
+            ("TABS=4", Indentation::Tabs(4)),
+            ("tabs=4", Indentation::Tabs(4)),
+            ("SPACES=4", Indentation::Spaces(4)),
+            ("spaces=4", Indentation::Spaces(4)),
+        ];
+        for (input, expected) in cases {
+            let actual = Indentation::from_str(input).unwrap();
+            assert_eq!(actual, expected);
+        }
+    }
+
+    #[test]
+    fn test_make_indentation_transformation() {
+        let cases = vec![
+            (Indentation::Tabs(4), "    Lorem ipsum", "\tLorem ipsum"),
+            (Indentation::Tabs(2), "    Lorem ipsum", "\t\tLorem ipsum"),
+            (Indentation::Spaces(4), "\tLorem ipsum", "    Lorem ipsum"),
+            (Indentation::Spaces(2), "\t\tLorem ipsum", "    Lorem ipsum"),
+            (Indentation::Tabs(4), "\tLorem ipsum", "\tLorem ipsum"),
+            (Indentation::Spaces(4), "    Lorem ipsum", "    Lorem ipsum"),
+        ];
+        for (style, input, expected) in cases {
+            let actual = style.make_transformation(String::from(input));
+            assert_eq!(actual.as_str(), expected);
         }
     }
 }
