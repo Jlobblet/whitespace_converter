@@ -7,7 +7,7 @@ use crate::new_line::NewLine;
 
 #[derive(Debug, StructOpt)]
 #[structopt(name = "wsc")]
-/// [w]hite[s]pace [c]onverter
+/// \[w\]hite\[s\]pace \[c\]onverter
 ///
 /// Convert whitespace in a given file and output to stdout.
 pub(crate) struct Args {
@@ -30,7 +30,7 @@ pub(crate) struct Args {
 
     /// Whether to convert indentation to tabs or spaces.
     ///
-    /// Pass [tabs|spaces]=number to specify how many spaces there should be per tab during conversion.
+    /// Pass \[tabs|spaces\]=number to specify how many spaces there should be per tab during conversion.
     ///
     /// e.g. wsc README.md -i tabs=4
     ///
