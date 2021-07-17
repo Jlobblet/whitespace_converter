@@ -4,15 +4,28 @@ use anyhow::{anyhow, Error, Result};
 
 #[derive(Debug, PartialEq)]
 pub(crate) enum NewLine {
+    /// Convert newlines to LF (`\n`)
     LF,
+    /// Convert newlines to CRLF (`\r\n`)
     CRLF,
 }
 
 impl FromStr for NewLine {
     type Err = Error;
 
+    /// Parse a `str` to a `NewLine`.
+    ///
+    /// Convert to ascii lowercase and then turn `"lf"` into `NewLine::LF`, `"crlf"` into `NewLine::CRLF`.
+    ///
+    /// ```
+    /// let lf = NewLine.from_str("LF").unwrap();
+    /// assert_eq!(lf, NewLine::LF);
+    ///
+    /// let crlf = NewLine.from_str("CRLF").unwrap();
+    /// assert_eq!(crlf, NewLine::CRLF);
+    /// ```
     fn from_str(s: &str) -> Result<Self> {
-        match &s.to_ascii_lowercase()[..] {
+        match s.to_ascii_lowercase().as_str() {
             "lf" => Ok(NewLine::LF),
             "crlf" => Ok(NewLine::CRLF),
             _ => Err(anyhow!("Unrecognised newline: {}", s)),

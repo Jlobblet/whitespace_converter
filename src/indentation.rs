@@ -4,13 +4,21 @@ use anyhow::{anyhow, Result};
 
 #[derive(Debug, PartialEq)]
 pub(crate) enum Indentation {
+    /// Convert indentation to tabs where n spaces becomes one tab
     Tabs(usize),
+    /// Convert indentation to spaces where each tab becomes n spaces
     Spaces(usize),
 }
 
 impl FromStr for Indentation {
     type Err = anyhow::Error;
 
+    /// Parse a `str` to an `Indentation`.
+    /// Expected inputs: `tabs=4` `spaces=4`.
+    ///
+    /// Convert to ASCII lowercase and then split on `=`.
+    /// The left part should be either "tabs" or "spaces",
+    /// and the right part is parsed to `usize`.
     fn from_str(s: &str) -> Result<Self> {
         let lower = s.to_ascii_lowercase();
         let (mode, n) = lower.split_once("=").ok_or(anyhow!("fuck"))?;
@@ -24,6 +32,12 @@ impl FromStr for Indentation {
 }
 
 impl Indentation {
+    /// Convert leading whitespace based on what `self` is.
+    /// The wrapped `usize` is how many spaces equal one tab.
+    ///
+    /// If `self` is `Indentation::Tabs` then convert each n spaces to a tab.
+    ///
+    /// If `self` is `Indentation::Spaces` then convert each tab to n spaces.
     pub(crate) fn make_transformation(&self, buf: String) -> String {
         return if let Some(index) = match self {
             Indentation::Tabs(_) => buf.find(|c| c != ' '),
