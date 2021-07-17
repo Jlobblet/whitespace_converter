@@ -21,7 +21,12 @@ impl FromStr for NewLine {
 }
 
 impl NewLine {
-    pub(crate) fn make_transformation(&self, buf: &String) -> String {
+    /// Convert newlines according to what self is:
+    ///
+    /// `NewLine::LF` -> convert CRLF (`\r\n`) to LF (`\n`)
+    ///
+    /// `NewLine::CRLF` -> convert LF to CRLF
+    pub(crate) fn make_transformation(&self, buf: String) -> String {
         match self {
             NewLine::LF => buf.replace("\r\n", "\n"),
             NewLine::CRLF => buf.replace("\n", "\r\n"),
@@ -50,13 +55,17 @@ mod tests {
 
     #[test]
     fn test_make_newline_transformation() {
-        let crlf = String::from("Lorem ipsum\r\n");
-        let lf = String::from("Lorem ipsum\n");
-
-        let actual = NewLine::LF.make_transformation(&crlf);
-        assert_eq!(actual, lf);
-
-        let actual = NewLine::CRLF.make_transformation(&lf);
-        assert_eq!(actual, crlf);
+        let cases = vec![
+            (NewLine::LF, "Lorem ipsum\r\n", "Lorem ipsum\n"),
+            (NewLine::CRLF, "Lorem ipsum\n", "Lorem ipsum\r\n"),
+            (NewLine::LF, "Lorem ipsum\n", "Lorem ipsum\n"),
+            (NewLine::CRLF, "Lorem ipsum\r\n", "Lorem ipsum\r\n"),
+            (NewLine::LF, "Lorem ipsum", "Lorem ipsum"),
+            (NewLine::CRLF, "Lorem ipsum", "Lorem ipsum"),
+        ];
+        for (newline, input, expected) in cases {
+            let actual = newline.make_transformation(String::from(input));
+            assert_eq!(actual.as_str(), expected);
+        }
     }
 }

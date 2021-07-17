@@ -26,7 +26,7 @@ fn main(args: Args) -> Result<()> {
         }
 
         if let Some(newline) = &newline {
-            buffer = newline.make_transformation(&buffer);
+            buffer = newline.make_transformation(buffer);
         }
 
         if let Some(indentation) = &indentation {
