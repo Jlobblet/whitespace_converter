@@ -21,7 +21,9 @@ impl FromStr for Indentation {
     /// and the right part is parsed to `usize`.
     fn from_str(s: &str) -> Result<Self> {
         let lower = s.to_ascii_lowercase();
-        let (mode, n) = lower.split_once("=").ok_or(anyhow!("fuck"))?;
+        let (mode, n) = lower
+            .split_once("=")
+            .ok_or_else(|| anyhow!("String does not contain exactly one ="))?;
         let n = usize::from_str(n)?;
         match mode {
             "tabs" => Ok(Indentation::Tabs(n)),
