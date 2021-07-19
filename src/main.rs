@@ -2,7 +2,6 @@ use std::fs::File;
 use std::io::{BufRead, BufReader, Write};
 
 use anyhow::Result;
-use paw;
 
 mod args;
 mod indentation;
