@@ -5,9 +5,9 @@ use anyhow::{anyhow, Error, Result};
 #[derive(Debug, PartialEq)]
 pub(crate) enum NewLine {
     /// Convert newlines to LF (`\n`)
-    LF,
+    Lf,
     /// Convert newlines to CRLF (`\r\n`)
-    CRLF,
+    Crlf,
 }
 
 impl FromStr for NewLine {
@@ -26,8 +26,8 @@ impl FromStr for NewLine {
     /// ```
     fn from_str(s: &str) -> Result<Self> {
         match s.to_ascii_lowercase().as_str() {
-            "lf" => Ok(NewLine::LF),
-            "crlf" => Ok(NewLine::CRLF),
+            "lf" => Ok(NewLine::Lf),
+            "crlf" => Ok(NewLine::Crlf),
             _ => Err(anyhow!("Unrecognised newline: {}", s)),
         }
     }
@@ -41,8 +41,8 @@ impl NewLine {
     /// `NewLine::CRLF` -> convert LF to CRLF
     pub(crate) fn make_transformation(&self, buf: String) -> String {
         match self {
-            NewLine::LF if buf.ends_with("\r\n") => buf.replace("\r\n", "\n"),
-            NewLine::CRLF if !buf.ends_with("\r\n") => buf.replace("\n", "\r\n"),
+            NewLine::Lf if buf.ends_with("\r\n") => buf.replace("\r\n", "\n"),
+            NewLine::Crlf if !buf.ends_with("\r\n") => buf.replace("\n", "\r\n"),
             _ => buf,
         }
     }
@@ -56,10 +56,10 @@ mod tests {
     #[test]
     fn test_newline_from_str() {
         let cases = vec![
-            ("LF", NewLine::LF),
-            ("lf", NewLine::LF),
-            ("CRLF", NewLine::CRLF),
-            ("crlf", NewLine::CRLF),
+            ("LF", NewLine::Lf),
+            ("lf", NewLine::Lf),
+            ("CRLF", NewLine::Crlf),
+            ("crlf", NewLine::Crlf),
         ];
         for (input, expected) in cases {
             let actual = NewLine::from_str(input).unwrap();
@@ -70,12 +70,12 @@ mod tests {
     #[test]
     fn test_make_newline_transformation() {
         let cases = vec![
-            (NewLine::LF, "Lorem ipsum\r\n", "Lorem ipsum\n"),
-            (NewLine::CRLF, "Lorem ipsum\n", "Lorem ipsum\r\n"),
-            (NewLine::LF, "Lorem ipsum\n", "Lorem ipsum\n"),
-            (NewLine::CRLF, "Lorem ipsum\r\n", "Lorem ipsum\r\n"),
-            (NewLine::LF, "Lorem ipsum", "Lorem ipsum"),
-            (NewLine::CRLF, "Lorem ipsum", "Lorem ipsum"),
+            (NewLine::Lf, "Lorem ipsum\r\n", "Lorem ipsum\n"),
+            (NewLine::Crlf, "Lorem ipsum\n", "Lorem ipsum\r\n"),
+            (NewLine::Lf, "Lorem ipsum\n", "Lorem ipsum\n"),
+            (NewLine::Crlf, "Lorem ipsum\r\n", "Lorem ipsum\r\n"),
+            (NewLine::Lf, "Lorem ipsum", "Lorem ipsum"),
+            (NewLine::Crlf, "Lorem ipsum", "Lorem ipsum"),
         ];
         for (newline, input, expected) in cases {
             let actual = newline.make_transformation(String::from(input));
