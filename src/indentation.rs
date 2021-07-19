@@ -99,6 +99,8 @@ mod tests {
             (Indentation::Spaces(2), "\t\tLorem ipsum", "    Lorem ipsum"),
             (Indentation::Tabs(4), "\tLorem ipsum", "\tLorem ipsum"),
             (Indentation::Spaces(4), "    Lorem ipsum", "    Lorem ipsum"),
+            (Indentation::Tabs(2), "\t  Lorem ipsum", "\t\tLorem ipsum"),
+            (Indentation::Spaces(2), "  \tLorem ipsum", "    Lorem ipsum"),
         ];
         for (style, input, expected) in cases {
             let actual = style.make_transformation(String::from(input));
