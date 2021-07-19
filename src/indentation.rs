@@ -39,25 +39,35 @@ impl Indentation {
     ///
     /// If `self` is `Indentation::Spaces` then convert each tab to n spaces.
     pub(crate) fn make_transformation(&self, buf: String) -> String {
-        return if let Some(index) = match self {
-            Indentation::Tabs(_) => buf.find(|c| c != ' '),
-            Indentation::Spaces(_) => buf.find(|c| c != '\t'),
-        } {
-            if index == 0 {
-                return buf;
+        let mut tabs: usize = 0;
+        let mut spaces: usize = 0;
+        // Index at which the rest of the string begins
+        let mut index: usize = 0;
+        for c in buf.chars() {
+            match c {
+                '\t' => {
+                    tabs += 1;
+                    index += 1;
+                }
+                ' ' => {
+                    spaces += 1;
+                    index += 1;
+                }
+                _ => break,
             }
-            let (char, width) = match self {
-                Indentation::Tabs(u) => ('\t', index / u),
-                Indentation::Spaces(u) => (' ', index * u),
-            };
-            let mut new = String::with_capacity(buf.capacity());
-            new.extend(std::iter::repeat(char).take(width));
-            new.reserve_exact(buf.capacity());
-            new.push_str(&buf[index..]);
-            new
-        } else {
-            buf
+        }
+        // There was no indentation at all - return what we were given
+        if tabs == 0 && spaces == 0 {
+            return buf;
+        }
+        let (char, count) = match self {
+            Indentation::Tabs(u) => ('\t', tabs + spaces / u),
+            Indentation::Spaces(u) => (' ', spaces + tabs * u),
         };
+        let mut new = String::with_capacity(count + buf.len() - index);
+        new.extend(std::iter::repeat(char).take(count));
+        new.push_str(&buf[index..]);
+        new
     }
 }
 
